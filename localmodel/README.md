@@ -79,6 +79,6 @@ At this time, contributions are not being accepted as the project is undergoing 
 
 The Local Model is provided openly for review, evaluation, and deployment in secure environments, but all development is currently maintained in a closed governance model to ensure alignment with emerging cybersecurity standards.
 
-Please check back in the future for contribution opportunities as the compliance landscape stabilizes.
+Please check back in the future for contribution opportunities.
 
 ---
