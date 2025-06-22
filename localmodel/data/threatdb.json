@@ -1,0 +1,14 @@
+/* This is an example JSON that should be used strictly as an example for data formatting.
+*/
+
+[
+  {
+    "indicator": "127.0.0.1",
+    "type": "ipv4",
+    "tags": ["botnet", "ransomware"],
+    "confidence": "High",
+    "percentage": "85",
+    "source": "Very Reliable Threat Source",
+    "last_seen": "2025-06-20"
+  }
+]

@@ -16,7 +16,7 @@ indicator_inspector_local/
 ├── cli/                     # CLI entrypoint and CLI tools
 │   └── main.py
 ├── data/                    # Offline threat data (JSON/CSV)
-│   └── local_threat_db.json
+│   └── threatdb.json
 ├── logs/                    # Enrichment logs and audit files
 │   └── activity.log
 ├── config/                  # Configuration files
