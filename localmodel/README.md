@@ -82,6 +82,3 @@ The Local Model is provided openly for review, evaluation, and deployment in sec
 Please check back in the future for contribution opportunities as the compliance landscape stabilizes.
 
 ---
-
-### 📬 Contact
-For licensing information regarding the Agentic Model or to request a demo, contact the project maintainer at: `security@yourdomain.tld`
