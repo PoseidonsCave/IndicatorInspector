@@ -1,22 +1,35 @@
-# cli/main.py
-
 import argparse
-from core.enrichment import enrich_local
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from core.enrich_local import enrich_from_local_db
 from core.schema import validate_entry
 from core.scoring import score_indicator
 from core.utils import write_log
+from core.ioc_parser import parse_file
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Indicator Inspector (Local Model) - Offline IOC Scoring Tool"
+        description="Indicator Inspector (Local Model) - Offline IOC Tool"
     )
-    parser.add_argument(
-        "indicator", help="IOC to enrich (e.g. IP, domain, or file hash)"
-    )
+    parser.add_argument("indicator", nargs="?", help="IOC to enrich (IP, domain, or hash)")
+    parser.add_argument("--extract-iocs", help="Path to .json, .txt, .csv, or .yaml file to parse for IOCs")
+    parser.add_argument("--output", help="Where to save parsed IOCs (default: data/parsed_threats.json)")
     args = parser.parse_args()
 
+    if args.extract_iocs:
+        output_path = args.output or os.path.join("data", "parsed_threats.json")
+        parse_file(args.extract_iocs, output_path)
+        return
+
+    if not args.indicator:
+        print("[!] You must provide an indicator or use --extract-iocs")
+        return
+
     indicator = args.indicator.strip()
-    matches = enrich_local(indicator)
+    matches = enrich_from_local_db(indicator)
 
     if not matches:
         print(f"[!] No local intelligence found for: {indicator}")
