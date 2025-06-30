@@ -76,12 +76,26 @@ def parse_file(filepath, output_path=None):
                 ioc_list.append(ioc_entry)
 
     if output_path:
-        try:
-            with open(output_path, "w", encoding="utf-8") as out:
-                json.dump(ioc_list, out, indent=2)
-                print(f"[+] Parsed IOCs written to: {output_path}")
-        except Exception as e:
-            print(f"[!] Failed to write output: {e}")
+        data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data"))
+        normalized = os.path.normpath(output_path)
+        out_abs = os.path.abspath(output_path)
+
+        invalid = False
+        if ".." in normalized.split(os.sep):
+            print("[!] Invalid output path: directory traversal detected")
+            invalid = True
+        elif not out_abs.startswith(data_dir + os.sep):
+            print(f"[!] Output path must be within the data directory: {data_dir}")
+            invalid = True
+
+        if not invalid:
+            try:
+                os.makedirs(os.path.dirname(out_abs), exist_ok=True)
+                with open(out_abs, "w", encoding="utf-8") as out:
+                    json.dump(ioc_list, out, indent=2)
+                    print(f"[+] Parsed IOCs written to: {out_abs}")
+            except Exception as e:
+                print(f"[!] Failed to write output: {e}")
 
     return ioc_list
 
