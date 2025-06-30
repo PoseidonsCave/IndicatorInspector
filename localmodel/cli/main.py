@@ -4,6 +4,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+# Updated import path for local enrichment logic
 from core.enrichment import enrich_local
 from core.schema import validate_entry
 from core.scoring import score_indicator
