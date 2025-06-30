@@ -1,7 +1,11 @@
 import json
 import os
 
-DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "local_threat_db.json")
+# Threat intelligence is stored in `threatdb.json` under the data directory.
+# The original path referenced `local_threat_db.json`, which does not exist and
+# causes enrichment to always report the database as missing.  Align the path
+# with the actual file name so enrichment works correctly.
+DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "threatdb.json")
 
 def enrich_local(indicator):
     if not os.path.exists(DATA_PATH):
