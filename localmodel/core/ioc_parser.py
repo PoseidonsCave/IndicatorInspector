@@ -2,7 +2,10 @@ import os
 import re
 import json
 import csv
-import yaml
+try:
+    import yaml
+except ImportError:  # PyYAML may not be installed in minimal environments
+    yaml = None
 from core.schema import validate_entry
 
 def detect_type(ioc):
@@ -40,8 +43,12 @@ def parse_file(filepath, output_path=None):
                 raw = json.load(f)
                 text = json.dumps(raw)
             elif filepath.endswith(".yaml") or filepath.endswith(".yml"):
-                raw = yaml.safe_load(f)
-                text = json.dumps(raw)
+                if yaml is None:
+                    # Fall back to plain text if PyYAML is unavailable
+                    text = f.read()
+                else:
+                    raw = yaml.safe_load(f)
+                    text = json.dumps(raw)
             elif filepath.endswith(".csv"):
                 reader = csv.reader(f)
                 lines = [" ".join(row) for row in reader]

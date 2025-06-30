@@ -4,7 +4,10 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from core.enrich_local import enrich_from_local_db
+# Import the enrichment function from the correct module.  The previous import
+# referenced a non-existent module and function (`enrich_local.enrich_from_local_db`).
+# This prevented the CLI from running at all.
+from core.enrichment import enrich_local
 from core.schema import validate_entry
 from core.scoring import score_indicator
 from core.utils import write_log
@@ -16,11 +19,13 @@ def main():
     )
     parser.add_argument("indicator", nargs="?", help="IOC to enrich (IP, domain, or hash)")
     parser.add_argument("--extract-iocs", help="Path to .json, .txt, .csv, or .yaml file to parse for IOCs")
-    parser.add_argument("--output", help="Where to save parsed IOCs (default: data/parsed_threats.json)")
+    parser.add_argument("--output", help="Where to save parsed IOCs (default: localmodel/data/parsed_threats.json)")
     args = parser.parse_args()
 
     if args.extract_iocs:
-        output_path = args.output or os.path.join("data", "parsed_threats.json")
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        default_out = os.path.join(base_dir, "data", "parsed_threats.json")
+        output_path = args.output or default_out
         parse_file(args.extract_iocs, output_path)
         return
 
@@ -29,7 +34,7 @@ def main():
         return
 
     indicator = args.indicator.strip()
-    matches = enrich_from_local_db(indicator)
+    matches = enrich_local(indicator)
 
     if not matches:
         print(f"[!] No local intelligence found for: {indicator}")
