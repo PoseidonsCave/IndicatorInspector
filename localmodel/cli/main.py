@@ -9,7 +9,7 @@ from core.enrichment import enrich_local
 from core.schema import validate_entry
 from core.scoring import score_indicator
 from core.utils import write_log
-from core.ioc_parser import parse_file
+from core.ioc_parser import parse_file, detect_type
 
 def main():
     parser = argparse.ArgumentParser(
@@ -32,6 +32,10 @@ def main():
         return
 
     indicator = args.indicator.strip()
+    if not detect_type(indicator):
+        print(f"[!] Unknown indicator type: {indicator}")
+        return
+
     matches = enrich_local(indicator)
 
     if not matches:
