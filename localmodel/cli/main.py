@@ -4,9 +4,6 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-# Import the enrichment function from the correct module.  The previous import
-# referenced a non-existent module and function (`enrich_local.enrich_from_local_db`).
-# This prevented the CLI from running at all.
 from core.enrichment import enrich_local
 from core.schema import validate_entry
 from core.scoring import score_indicator

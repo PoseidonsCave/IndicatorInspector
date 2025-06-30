@@ -4,7 +4,7 @@ import json
 import csv
 try:
     import yaml
-except ImportError:  # PyYAML may not be installed in minimal environments
+except ImportError:
     yaml = None
 from core.schema import validate_entry
 
