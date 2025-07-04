@@ -5,7 +5,8 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from core.enrich_local import enrich_from_local_db
+# Updated import path for local enrichment logic
+from core.enrichment import enrich_local
 from core.scoring import score_indicator
 from core.schema import validate_entry
 from core.ioc_parser import parse_file
@@ -37,7 +38,7 @@ class IndicatorInspectorApp:
             messagebox.showwarning("Input Error", "Please enter an indicator.")
             return
 
-        matches = enrich_from_local_db(ioc)
+        matches = enrich_local(ioc)
         valid_entries = [entry for entry in matches if not validate_entry(entry)]
 
         self.output.delete(1.0, tk.END)
@@ -63,7 +64,8 @@ class IndicatorInspectorApp:
         if not filepath:
             return
 
-        output_path = os.path.join("data", "parsed_gui_output.json")
+        base_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data"))
+        output_path = os.path.join(base_data_dir, "parsed_gui_output.json")
         parsed = parse_file(filepath, output_path)
 
         self.output.delete(1.0, tk.END)
