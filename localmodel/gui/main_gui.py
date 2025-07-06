@@ -1,15 +1,20 @@
+import pyperclip
 import tkinter as tk
-from tkinter import filedialog, messagebox, scrolledtext
 import os
 import sys
+from localmodel.core.reports import report
+from localmodel.core.scoring import score_indicator
+from localmodel.core.schema import validate_entry
+from tkinter import filedialog, messagebox, scrolledtext
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Updated import path for local enrichment logic
-from core.enrichment import enrich_local
-from core.scoring import score_indicator
-from core.schema import validate_entry
-from core.ioc_parser import parse_file
+from localmodel.core.enrichment import enrich_local
+from localmodel.core.scoring import score_indicator
+from localmodel.core.schema import validate_entry
+from localmodel.core.ioc_parser import parse_file
+from localmodel.core.reports import report
 
 class IndicatorInspectorApp:
     def __init__(self, root):
@@ -31,6 +36,9 @@ class IndicatorInspectorApp:
 
         self.output = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=80, height=20)
         self.output.pack(padx=10, pady=10)
+
+        self.report_button = tk.Button(root, text="Export Report", command=self.export_report_gui)
+        self.report_button.pack(pady=5)
 
     def enrich_ioc(self):
         ioc = self.entry.get().strip()
@@ -55,6 +63,33 @@ class IndicatorInspectorApp:
         self.output.insert(tk.END, f"Indicator: {ioc}\n")
         self.output.insert(tk.END, f"Score: {score}/100\n")
         self.output.insert(tk.END, f"Tags: {', '.join(tags) if tags else 'None'}\n")
+
+    def export_report_gui(self):
+        if not self.valid_entries:
+            messagebox.showwarning("Export Error", "No valid IOC data available. Run enrichment first.")
+            return
+
+        json_path, md_path, sbom_path, hash_entries = report(self.valid_entries)
+        hash_text = "\n".join(hash_entries)
+
+        popup = tk.Toplevel(self.root)
+        popup.title("Report Exported")
+        popup.geometry("600x300")
+
+        label = tk.Label(popup, text="Report files created. SHA256 hashes:")
+        label.pack(pady=5)
+
+        text_box = scrolledtext.ScrolledText(popup, wrap=tk.WORD, width=70, height=10)
+        text_box.pack(padx=10, pady=5)
+        text_box.insert(tk.END, hash_text)
+        text_box.config(state=tk.DISABLED)
+
+        def copy_to_clipboard():
+            pyperclip.copy(hash_text)
+            messagebox.showinfo("Copied", "SHA256 hashes copied to clipboard.")
+
+        copy_btn = tk.Button(popup, text="Copy to Clipboard", command=copy_to_clipboard)
+        copy_btn.pack(pady=5)
 
     def parse_file_dialog(self):
         filepath = filedialog.askopenfilename(
