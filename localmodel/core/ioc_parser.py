@@ -33,6 +33,15 @@ def extract_iocs_from_text(text):
 
     return list(matches)
 
+def refang(text):
+    return (
+        text.replace("[.]", ".")
+            .replace("(.)", ".")
+            .replace("[dot]", ".")
+            .replace("hxxp://", "http://")
+            .replace("hxxps://", "https://")
+    )
+
 def parse_file(filepath, output_path=None):
     filename = os.path.basename(filepath)
     ioc_list = []
