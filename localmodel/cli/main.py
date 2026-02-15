@@ -64,5 +64,15 @@ def main():
 
     write_log("activity.log", f"Scored {indicator} => {score}/100 | Tags: {tags}")
 
+    if args.export_report:
+        json_path, md_path, sbom_path, hash_entries = report(valid_entries)
+        print("\n=== Report Summary ===")
+        print(f"[+] JSON: {json_path}")
+        print(f"[+] Markdown: {md_path}")
+        print(f"[+] SBOM: {sbom_path}")
+        print("[+] Hashes:")
+        for line in hash_entries:
+            print(f"    {line}")
+
 if __name__ == "__main__":
     main()
